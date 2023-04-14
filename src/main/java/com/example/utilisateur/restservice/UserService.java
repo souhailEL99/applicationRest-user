@@ -23,6 +23,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserService(UserRepository userRepository2) {
+    }
+
     /**
      * Enregistre l'utilisateur dans la base de données.
      * 
@@ -69,7 +72,7 @@ public class UserService {
         }
         if (!StringUtils.isNotBlank(user.getPhoneNumber()) || user.getPhoneNumber().length() > 10) {
             errors.add(
-                    "Le numéro de téléphone de l'utilisateur ne doit pas dépasser 10 chiffres  et ne doit pas être null.");
+                    "Le numéro de téléphone de l'utilisateur ne doit pas dépasser 10 chiffres et ne doit pas être null.");
         }
         if (!user.getGender().equalsIgnoreCase("F") && !user.getGender().equalsIgnoreCase("M")) {
             errors.add("Le genre de l'utilisateur doit être M ou F.");
