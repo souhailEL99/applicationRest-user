@@ -73,9 +73,8 @@ public class UserController {
 
     /**
      * Récupère l'utilisateur avec l'id spécifié.
-     * Si le name contient un espace on, dans la requête on le remplace par : %20.
      * 
-     * @param name le nom de l'utilisateur.
+     * @param id l'id de l'utilisateur.
      * @return un objet ResponseEntity avec le statut HTTP approprié et
      *         l'utilisateur.
      */
