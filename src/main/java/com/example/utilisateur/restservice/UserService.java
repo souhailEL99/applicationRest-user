@@ -70,9 +70,9 @@ public class UserService {
         if (!StringUtils.isNotBlank(user.getName()) || user.getName().length() > 50) {
             errors.add("Le nom de l'utilisateur est obligatoire et ne doit pas dépasser 50 caractères.");
         }
-        if (!StringUtils.isNotBlank(user.getPhoneNumber()) || user.getPhoneNumber().length() > 10) {
+        if (!StringUtils.isNotBlank(user.getPhoneNumber()) || user.getPhoneNumber().length() != 10) {
             errors.add(
-                    "Le numéro de téléphone de l'utilisateur ne doit pas dépasser 10 chiffres et ne doit pas être null.");
+                    "Le numéro de téléphone de l'utilisateur doit être exactement 10 chiffres");
         }
         if (!user.getGender().equalsIgnoreCase("F") && !user.getGender().equalsIgnoreCase("M")) {
             errors.add("Le genre de l'utilisateur doit être M ou F.");
