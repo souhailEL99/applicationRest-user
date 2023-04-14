@@ -1,14 +1,15 @@
 # applicationRest-user
 ApplicationRest-User est une application RESTful qui permet de gérer des utilisateurs. Elle est développée en utilisant le framework Spring Boot et utilise plusieurs technologies.
-#Lancement de l'application
+
+# Lancement de l'application
 - Cloner le dépôt avec : git clone https://github.com/souhailEL99/applicationRest-user.git
 - Build avec : mvn clean instaLL -U
 - Lancer le serveur : mvn spring-boot:run
 - Voir la santé du serveur : http://localhost:8080/actuator/health
 - Ouvrir la console h2 : http://localhost:8080/h2-console/
 - Générer la javadoc : mvn javadoc:javadoc
-
-#Aspects technologiques utilisés
+- 
+# Aspects technologiques utilisés
 - L'application utilise plusieurs technologies, notamment :
 
 - H2 : Une base de données relationnelle en mémoire utilisée pour stocker les données des utilisateurs.
