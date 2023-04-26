@@ -12,9 +12,12 @@ package com.example.utilisateur.mapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
+
 import com.example.utilisateur.dto.UserDTO;
 import com.example.utilisateur.entity.User;
 
+@Component
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

@@ -3,21 +3,28 @@
  */
 package com.example.utilisateur.controller;
 
+import com.example.utilisateur.dto.UserDTO;
 import com.example.utilisateur.entity.User;
+import com.example.utilisateur.mapping.UserMapper;
 import com.example.utilisateur.restservice.UserService;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Controller
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -26,8 +33,15 @@ public class UserController {
      * Appel au service qui permet de gèrer les actions à réaliser sur les
      * utilisateurs.
      */
+    private final UserService userService;
     @Autowired
-    private UserService userService;
+    private UserMapper userMapper;
+
+    @Autowired
+    public UserController(UserService userService, UserMapper userMapper) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
     /**
      * Logger pour suivre les actions réalisées.
@@ -41,16 +55,18 @@ public class UserController {
      * @return un objet ResponseEntity avec le statut HTTP approprié et un message.
      */
     @PostMapping("")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
         logger.info("Enregistrement d'un utilisateur");
-        List<String> validationErrors = userService.getValidationErrors(user);
+        User user = userMapper.toEntity(userDTO);
+        List<String> validationErrors = userService.getValidationErrors(userDTO);
         if (!validationErrors.isEmpty()) {
             String errorMessage = String.join("\n", validationErrors);
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
         userService.saveUser(user);
-        String message = "L'utilisateur avec l'id : " + user.getId() + ", est enregistré avec succès.";
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+        String message = "L'utilisateur avec l'id : " + user.getId() + " et le nom : " + user.getName()
+                + ", est enregistré avec succès.";
+        return ResponseEntity.status(HttpStatus.CREATED).body("{\"Ok\": \"" + message + "\" }");
     }
 
     /**
@@ -61,14 +77,17 @@ public class UserController {
      * @return un objet ResponseEntity avec le statut HTTP approprié et une liste
      *         d'utilisateurs.
      */
-    @GetMapping("/{name}")
-    public ResponseEntity<List<User>> getUser(@PathVariable String name) {
+    @GetMapping("")
+    public ResponseEntity<List<UserDTO>> getUser(@RequestParam(value = "name") String name) {
         logger.info("Recherche de l'utilisateur avec le nom : {}", name);
-        List<User> users = userService.getUsersByName(name);
-        if (users == null || users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (StringUtils.isEmpty(name)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserDTO> users = userService.getUsersDTOByName(name);
+        if (users == null || users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
     /**
@@ -78,10 +97,10 @@ public class UserController {
      * @return un objet ResponseEntity avec le statut HTTP approprié et
      *         l'utilisateur.
      */
-    @GetMapping("/id/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         logger.info("Recherche de l'utilisateur avec l'id : {}", id);
-        Optional<User> user = userService.getUserByID(id);
-        return user.isPresent() ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+        Optional<UserDTO> userDTO = userService.getUserDTOByID(id);
+        return userDTO.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

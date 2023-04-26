@@ -26,12 +26,12 @@ public class TraceAspect {
      * cet aspect.
      */
     @Pointcut("within(com.example.utilisateur.restservice.UserService)")
-    public void userControllerMethods() {
+    public void userServiceMethods() {
     }
 
     /**
      * Cette méthode est appelée autour de chaque méthode dans l'ensemble des
-     * méthodes dans "userControllerMethods".
+     * méthodes dans "userServiceMethods".
      * Permet d'enregistrer le temps d'exécution mesuré dans les logs et l'afficher
      * dans la console.
      * 
@@ -41,19 +41,22 @@ public class TraceAspect {
      * @throws Throwable si une exception se produit pendant l'exécution de la
      *                   méthode.
      */
-    @Around("userControllerMethods()")
+    @Around("userServiceMethods()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        Object result = joinPoint.proceed();
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        logger.info("Method {} execution time: {} ms", joinPoint.getSignature().getName(), elapsedTime);
-        System.out.println("Method " + joinPoint.getSignature().getName() + "execution time: " + elapsedTime + " ms");
+        Object result = null;
+        try {
+            result = joinPoint.proceed();
+        } finally {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            logger.info("Method {} execution time: {} ms", joinPoint.getSignature().getName(), elapsedTime);
+        }
         return result;
     }
 
     /**
      * Cette méthode est appelée après l'exécution de chaque méthode dans l'ensemble
-     * des méthodes dans "userControllerMethods".
+     * des méthodes dans "userServiceMethods".
      * Permet d'enregistrer la valeur retournée par la méthode dans les logs et
      * l'afficher dans la console.
      * 
@@ -61,9 +64,8 @@ public class TraceAspect {
      *                  interceptée.
      * @param result    le résultat de la méthode interceptée.
      */
-    @AfterReturning(pointcut = "userControllerMethods()", returning = "result")
+    @AfterReturning(pointcut = "userServiceMethods()", returning = "result")
     public void logReturnValue(JoinPoint joinPoint, Object result) {
         logger.info("The method {} returned: {}", joinPoint.getSignature().getName(), result);
-        System.out.println("The method " + joinPoint.getSignature().getName() + "returned: " + result);
     }
 }

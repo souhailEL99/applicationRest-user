@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="TRACE_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>traceUserServiceMethodes.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.example.utilisateur.aspect.TraceAspect" level="INFO">
+        <appender-ref ref="TRACE_FILE"/>
+    </logger>
+</configuration>
