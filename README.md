@@ -8,7 +8,7 @@ ApplicationRest-User est une application RESTful qui permet de gérer des utilis
 - Voir la santé du serveur : http://localhost:8080/actuator/health
 - Ouvrir la console h2 : http://localhost:8080/h2-console/
 - Générer la javadoc : mvn javadoc:javadoc
-- 
+- Lancer les tus : mvn verify
 # Aspects technologiques utilisés
 - L'application utilise plusieurs technologies, notamment :
 
